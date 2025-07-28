@@ -25,6 +25,11 @@ class Game:
         self.score = 0
         self.font = pg.font.SysFont("Arial", 48, bold=True)
 
+        # ✅ Load âm thanh
+        self.sound_flap = pg.mixer.Sound("assets/sfx/flap.wav")
+        self.sound_dead = pg.mixer.Sound("assets/sfx/dead.wav")
+        self.sound_score = pg.mixer.Sound("assets/sfx/score.wav")
+
         self.setUpBgAndGround()
         self.gameLoop()
 
@@ -48,6 +53,7 @@ class Game:
                             self.bird.update_on = True
                     if event.key == pg.K_SPACE and self.is_enter_pressed and not self.is_game_over:
                         self.bird.flap(dt)
+                        self.sound_flap.play()  # ✅ phát âm khi vỗ cánh
 
             self.updateEverything(dt)
             self.checkCollisions()
@@ -71,6 +77,7 @@ class Game:
         self.bird.update_on = False
         self.is_enter_pressed = False
         self.is_game_over = True
+        self.sound_dead.play()  # ✅ phát âm khi game over
 
     def checkCollisions(self):
         if len(self.pipes):
@@ -103,6 +110,7 @@ class Game:
                 if not hasattr(pipe, "passed") and pipe.rect_up.right < self.bird.rect.left:
                     pipe.passed = True
                     self.score += 1
+                    self.sound_score.play()  # ✅ phát âm khi ghi điểm
 
             # removing pipes if out of screen
             if len(self.pipes) != 0 and self.pipes[0].rect_up.right < 0:
